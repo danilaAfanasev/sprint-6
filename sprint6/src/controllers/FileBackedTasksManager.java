@@ -27,7 +27,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         fileBackedTasksManager.getSubtaskById(subtask3.getId());
 
         FileBackedTasksManager fileManager = FileBackedTasksManager.loadFromFile(
-                new File("C:\\Users\\monst\\Desktop\\яндекса джава\\спринт 6\\sprint-6\\sprint6\\resources\\file.csv"));
+                new File("sprint6/resources/file.csv"));
         for (Map.Entry<Integer, Task> entry : fileManager.tasks.entrySet()) {
             System.out.println(entry.getKey() + " : " + entry.getValue());
         }
@@ -84,7 +84,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 fileManager.inMemoryHistoryManager.add(fileHistory.get(id));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ManagerSaveException("Ошибка при загрузке данных из файла." + e.getMessage());
         }
         return fileManager;
     }
