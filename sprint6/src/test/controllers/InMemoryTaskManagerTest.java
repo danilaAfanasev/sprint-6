@@ -1,7 +1,8 @@
-package test;
+package test.controllers;
 
 import controllers.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import model.*;
 
@@ -19,6 +20,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Добавить новую задачу")
     void addNewTask() {
         final Task task = new Task("addNewTask", "addNewTask description");
         taskManager.addTask(task);
@@ -33,6 +35,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Добавить новые эпик и подзадачу")
     void addNewEpicAndSubtasks() {
         final Epic changeWallpaper = new Epic("Поменять обои",
                 "Нужно успеть до Нового года");
@@ -68,6 +71,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Обновить задачу с таким же id")
     public void updateTaskShouldReturnTaskWithTheSameId() {
         final Task expected = new Task("Имя", "Описание");
         taskManager.addTask(expected);
@@ -77,6 +81,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Обновить эпик с таким же id")
     public void updateEpicShouldReturnEpicWithTheSameId() {
         final Epic expected = new Epic("Имя", "Описание");
         taskManager.addEpic(expected);
@@ -86,6 +91,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Обновить подзадачу с таким же id")
     public void updateSubtaskShouldReturnSubtaskWithTheSameId() {
         final Epic epic = new Epic("Имя", "Описание");
         taskManager.addEpic(epic);
@@ -98,6 +104,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Вернуть пустой список при удалении задач")
     public void deleteTasksShouldReturnEmptyList() {
         taskManager.addTask(new Task("Протереть пыль", "С новой, чистой тряпкой"));
         taskManager.addTask(new Task("Помыть полы", "С новым средством"));
@@ -107,6 +114,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Вернуть пустой список при удалении эпиков")
     public void deleteEpicsShouldReturnEmptyList() {
         taskManager.addEpic(new Epic("Поменять обои", "Нужно успеть до Нового года"));
         taskManager.removeAllEpics();
@@ -115,6 +123,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Вернуть пустой список при удалении подзадач")
     public void deleteSubtasksShouldReturnEmptyList() {
         Epic changeWallpaper = new Epic("Поменять обои", "Нужно успеть до Нового года");
         taskManager.addEpic(changeWallpaper);
@@ -131,6 +140,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Вернуть null при удалении задачи по id")
     public void deleteTaskByIdShouldReturnNullIfKeyIsMissing() {
         taskManager.addTask(new Task( "Протереть пыль", "С новой, чистой тряпкой", 1,Status.NEW));
         taskManager.addTask(new Task( "Помыть полы", "С новым средством",2, Status.DONE));
@@ -139,6 +149,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Вернуть null при удалении эпика по id")
     public void deleteEpicByIdShouldReturnNullIfKeyIsMissing() {
         taskManager.addEpic(new Epic( "Поменять обои", "Нужно успеть до Нового года", 1, Status.NEW, Arrays.asList(1, 2, 3)));
         taskManager.removeEpicById(1);
@@ -147,6 +158,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Вернуть null при удалении подзадачи по id")
     public void deleteSubtaskByIdShouldReturnNullIfKeyIsMissing() {
         Epic changeWallpaper = new Epic("Поменять обои", "Нужно успеть до Нового года");
         taskManager.addEpic(changeWallpaper);
@@ -160,6 +172,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
+    @DisplayName("Иметь одинаковые параметры у добавленной и созданной задачи")
     void TaskCreatedAndTaskAddedShouldHaveSameVariables() {
         Task expected = new Task( "Протереть пыль", "С новой, чистой тряпкой",1, Status.DONE);
         taskManager.addTask(expected);
