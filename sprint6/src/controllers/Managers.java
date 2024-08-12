@@ -15,6 +15,6 @@ public class Managers {
     }
 
     public static TaskManager getDefaultFile() {
-        return new FileBackedTasksManager(new File("C:\\Users\\monst\\Desktop\\яндекса джава\\спринт 6\\sprint-6\\sprint6\\resources\\file.csv"));
+        return new FileBackedTasksManager(new File("sprint6/resources/file.csv"));
     }
 }
