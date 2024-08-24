@@ -52,6 +52,10 @@ public class Task {
         this.description = description;
     }
 
+    public TaskType getTaskType() {
+        return TaskType.TASK;
+    }
+
     @Override
     public boolean equals(Object object){
         if (this == object){

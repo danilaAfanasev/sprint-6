@@ -1,7 +1,8 @@
-package test;
+package test.controllers;
 
 import controllers.*;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import model.*;
 
@@ -25,6 +26,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    @DisplayName("Сохранить старую задачу после обновления в историю")
     public void getHistoryShouldReturnOldTaskAfterUpdate() {
         Task wipeDust = new Task("Протереть пыль", "С новой, чистой тряпкой");
         taskManager.addTask(wipeDust);
@@ -40,6 +42,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    @DisplayName("Сохранить старый эпик после обновления в историю")
     public void getHistoryShouldReturnOldEpicAfterUpdate() {
         Epic changeWallpaper = new Epic("Поменять обои", "Нужно успеть до Нового года");
         taskManager.addEpic(changeWallpaper);
@@ -55,6 +58,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    @DisplayName("Сохранить старую подзадачу после обновления в историю")
     public void getHistoryShouldReturnOldSubtaskAfterUpdate() {
         Epic changeWallpaper = new Epic("Поменять обои", "Нужно успеть до Нового года");
         taskManager.addEpic(changeWallpaper);
@@ -74,6 +78,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    @DisplayName("Добавить задачу в историю")
     public void addTaskToHistory() {
         Task task1 = new Task("Первая задача", "Описание 1", 1, Status.NEW);
         Task task2 = new Task("Вторая задача", "Описание 2", 2, Status.NEW);
@@ -89,6 +94,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    @DisplayName("Удалить задачу из истории")
     public void removeTaskFromHistory() {
         Task task1 = new Task("Задача для удаления", "Описание", 1, Status.NEW);
         Task task2 = new Task("Другая задача", "Описание", 2, Status.NEW);
@@ -105,6 +111,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    @DisplayName("Добавить одинаковую задачу в историю")
     public void addingSameTaskUpdatesHistory() {
         Task task1 = new Task("Одинаковая задача", "Описание", 1, Status.NEW);
 
@@ -118,6 +125,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    @DisplayName("Удалить несуществующую задачу")
     public void removeNonExistentTask() {
         Task task1 = new Task("Задача", "Описание", 1, Status.NEW);
 
@@ -131,6 +139,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    @DisplayName("Проверить несколько операций")
     public void testMultipleOperations() {
         Task task1 = new Task("Задача 1", "Задача 1", 1, Status.NEW);
         Task task2 = new Task("Задача 2", "Задача 2", 2, Status.NEW);
