@@ -1,12 +1,25 @@
 package model;
 
 import java.util.Objects;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Task {
     protected String name;
     protected String description;
     protected int id;
     protected Status status = Status.NEW;
+    protected LocalDateTime startTime;
+    protected long duration;
+
+    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+
+    public Task(String name, String description, LocalDateTime startTime, long duration) {
+        this.name = name;
+        this.description = description;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
 
     public Task(String name, String description) {
         this.name = name;
@@ -18,6 +31,16 @@ public class Task {
         this.description = description;
         this.id = id;
         this.status = status;
+    }
+
+    public Task(String name, String description, int id, Status status, LocalDateTime startTime,
+                long duration) {
+        this.name = name;
+        this.description = description;
+        this.id = id;
+        this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
     public String getName(){
@@ -56,21 +79,59 @@ public class Task {
         return TaskType.TASK;
     }
 
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public String getStartTimeString() {
+        if (startTime == null) {
+            return "null";
+        }
+        return startTime.format(formatter);
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime != null) {
+            return startTime.plusMinutes(duration);
+        }
+        return null;
+    }
+
+    public String getEndTimeString() {
+        if (startTime != null) {
+            return getEndTime().format(formatter);
+        }
+        return null;
+    }
+
     @Override
-    public boolean equals(Object object){
-        if (this == object){
-            return true;
-        }
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        }
-        Task task = (Task) object;
-        return id == task.id;
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return Objects.equals(name, task.name) &&
+                Objects.equals(description, task.description) &&
+                (id == task.id) &&
+                Objects.equals(status, task.status) &&
+                Objects.equals(startTime, task.startTime) &&
+                (duration == task.duration);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, id, status);
+        return Objects.hash(name, description, id, status, startTime, duration);
     }
 
     @Override
@@ -79,6 +140,8 @@ public class Task {
                 "название='" + name + '\'' +
                 ", описание='" + description + '\'' +
                 ", id='" + id + '\'' +
-                ", статус='" + status + '}' + '\'';
+                ", статус='" + status + '\'' +
+                ", дата начала='" + getStartTimeString() + '\'' +
+                ", продолжительность='" + duration + '}' + '\'';
     }
 }
