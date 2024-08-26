@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import model.*;
+import exceptions.ManagerSaveException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -61,10 +62,10 @@ public class FileBackedTasksManagerTest {
     @DisplayName("Загрузка нескольких задач")
     public void testLoadMultipleTasks() throws IOException {
         String content = """
-                ID,TYPE,NAME,STATUS,DESCRIPTION,EPIC_ID
-                1,TASK,Task1,DONE,Description1,
-                2,EPIC,Epic1,NEW,Description2,
-                3,SUBTASK,Subtask1,DONE,Description3,2
+                id,type,name,status,description,startTime,endTime,duration,epic
+                1,TASK,Задача,NEW,description1,null,null,1000
+                2,EPIC,Эпик,NEW,description2,01.01.24 00:00,01.01.24 16:40,1000
+                3,SUBTASK,Подзадача,NEW,description3,01.01.24 00:00,01.01.24 16:40,1000,2
 
                 1,2,3""";
         Files.writeString(tempFile.toPath(), content);
@@ -74,5 +75,15 @@ public class FileBackedTasksManagerTest {
         assertNotNull(loadedManager);
         assertEquals(1, loadedManager.getListOfTasks().size());
         assertEquals(3, loadedManager.getHistory().size());
+    }
+
+    @Test
+    @DisplayName("Проверить исключение")
+    public void testLoadFromFileThrowsManagerSaveException() {
+        File nonExistentFile = new File("non_existent_file.csv");
+
+        assertThrows(ManagerSaveException.class, () -> {
+            FileBackedTasksManager.loadFromFile(nonExistentFile);
+        });
     }
 }
