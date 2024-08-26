@@ -11,8 +11,8 @@ class TaskTest {
     @Test
     @DisplayName("Задачи с одинаковыми id должны быть идентичными")
     public void tasksWithEqualIdShouldBeEqual() {
-        Task task1 = new Task("Купить хлеб", "В Пятерочке",10, Status.NEW);
-        Task task2 = new Task( "Купить колбасу", "В Пятерочке",10, Status.DONE);
+        Task task1 = new Task("Купить хлеб", "В Пятерочке",10, Status.NEW, null, 100);
+        Task task2 = new Task( "Купить колбасу", "В Пятерочке",10, Status.DONE,null, 100);
         assertEquals(task1, task2,
                 "Ошибка, экземпляры класса Task должны быть равны друг другу, если у них одинаковые id");
     }
