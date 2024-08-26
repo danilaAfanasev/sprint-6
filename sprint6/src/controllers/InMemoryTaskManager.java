@@ -18,7 +18,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     protected int nextID = 0;
 
-    Comparator<Task> comparator = Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
+    private final Comparator<Task> comparator = Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
             .thenComparing(Task::getId);
 
     protected Set<Task> prioritizedTasks = new TreeSet<>(comparator);
@@ -147,9 +147,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTaskById(int id) {
-        prioritizedTasks.remove(tasks.get(id));
-        tasks.remove(id);
-        inMemoryHistoryManager.remove(id);
+        if (tasks.containsKey(id)) {
+            prioritizedTasks.removeIf(task -> task.getId() == id);
+            tasks.remove(id);
+            inMemoryHistoryManager.remove(id);
+        }
     }
 
     @Override
