@@ -5,10 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import model.*;
+import exceptions.CollisionTaskException;
 
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 class InMemoryTaskManagerTest {
     private static TaskManager taskManager;
@@ -183,5 +186,75 @@ class InMemoryTaskManagerTest {
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getDescription(), actual.getDescription());
         assertEquals(expected.getStatus(), actual.getStatus());
+    }
+
+    @Test
+    @DisplayName("Проверить подзадачи со стаутсами NEW")
+    public void testAllSubtasksNew() {
+        Epic epic1 = new Epic("Эпик 1", "Описание 1", 1, Status.NEW, Arrays.asList());
+        taskManager.addEpic(epic1);
+
+        taskManager.addSubtask(new Subtask("Подзадача 1", "Описание", 1, Status.NEW, epic1.getId()));
+        taskManager.addSubtask(new Subtask("Подзадача 2", "Описание", 2, Status.NEW, epic1.getId()));
+
+        taskManager.checkEpicStatus(epic1.getId());
+
+        assertEquals(Status.NEW, epic1.getStatus());
+    }
+
+    @Test
+    @DisplayName("Проверить подзадачи со стаутсами DONE")
+    public void testAllSubtasksDone() {
+        Epic epic1 = new Epic("Эпик 1", "Описание 1", 1, Status.DONE, Arrays.asList());
+        taskManager.addEpic(epic1);
+
+        taskManager.addSubtask(new Subtask("Подзадача 1", "Описание", 1, Status.DONE, epic1.getId()));
+        taskManager.addSubtask(new Subtask("Подзадача 2", "Описание", 2, Status.DONE, epic1.getId()));
+
+        taskManager.checkEpicStatus(epic1.getId());
+
+        assertEquals(Status.DONE, epic1.getStatus());
+    }
+
+    @Test
+    @DisplayName("Проверить подзадачи со стаутсами NEW и DONE")
+    public void testSubtasksMixedStatus() {
+        Epic epic1 = new Epic("Эпик 1", "Описание 1", 1, Status.NEW, Arrays.asList());
+        taskManager.addEpic(epic1);
+
+        taskManager.addSubtask(new Subtask("Подзадача 1", "Описание", 1, Status.NEW, epic1.getId()));
+        taskManager.addSubtask(new Subtask("Подзадача 2", "Описание", 2, Status.DONE, epic1.getId()));
+
+        taskManager.checkEpicStatus(epic1.getId());
+
+        assertEquals(Status.IN_PROGRESS, epic1.getStatus());
+    }
+
+    @Test
+    @DisplayName("Проверить подзадачу со стаутсом IN_PROGRESS")
+    public void testSubtasksInProgress() {
+        Epic epic1 = new Epic("Эпик 1", "Описание 1", 1, Status.IN_PROGRESS, Arrays.asList());
+        taskManager.addEpic(epic1);
+
+        taskManager.addSubtask(new Subtask("Подзадача 1", "Описание", 1, Status.IN_PROGRESS, epic1.getId()));
+
+        taskManager.checkEpicStatus(epic1.getId());
+
+        assertEquals(Status.IN_PROGRESS, epic1.getStatus());
+    }
+
+    @Test
+    @DisplayName("Проверить исключение на параллельное время задач")
+    public void testValidateThrowsCollisionTaskException() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+
+        Task existingTask = new Task("Купить хлеб", "В Пятерочке",1, Status.NEW, LocalDateTime.parse("01.01.24 00:00",formatter), 100);
+        Task newTask = new Task("Купить хлеб", "В Пятерочке", 2, Status.NEW, LocalDateTime.parse("01.01.24 00:00",formatter), 100);
+
+        taskManager.addTask(existingTask);
+
+        assertThrows(CollisionTaskException.class, () -> {
+            taskManager.validate(newTask);
+        });
     }
 }
