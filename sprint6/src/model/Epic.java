@@ -20,7 +20,7 @@ public class Epic extends Task {
 
     public Epic(String name, String description, int id, Status status, List<Integer> subtaskIds) {
         super(name, description, id, status);
-        this.subtaskIds = subtaskIds;
+        this.subtaskIds = subtaskIds != null ? new ArrayList<>(subtaskIds) : new ArrayList<>();
     }
 
     public Epic(String name, String description, int id, Status status, LocalDateTime startTime, long duration,
@@ -60,18 +60,12 @@ public class Epic extends Task {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Epic epic = (Epic) o;
-        return Objects.equals(name, epic.name) &&
-                Objects.equals(description, epic.description) &&
-                (id == epic.id) &&
-                Objects.equals(status, epic.status) &&
-                Objects.equals(subtaskIds, epic.subtaskIds)&&
-                Objects.equals(startTime, epic.startTime) &&
-                (duration == epic.duration);
+        return id == epic.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, id, status, subtaskIds, startTime, duration);
+        return Objects.hash(id);
     }
 
     @Override
