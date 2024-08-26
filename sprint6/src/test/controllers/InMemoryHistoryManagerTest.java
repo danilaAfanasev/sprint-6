@@ -158,4 +158,65 @@ class InMemoryHistoryManagerTest {
         assertTrue(history.contains(task1), "История должна содержать задачу 1");
         assertTrue(history.contains(task3), "История должна содержать задачу 3");
     }
+
+    @Test
+    @DisplayName("Проверить пустую историю задач")
+    public void testEmptyHistory() {
+        assertTrue(historyManager.getHistory().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Проверить дублирование")
+    public void testDuplicateTasks() {
+        Task task1 = new Task("Задача 1", "Задача 1", 1, Status.NEW);
+        historyManager.add(task1);
+        historyManager.add(task1);
+
+        assertEquals(1, historyManager.getHistory().size());
+    }
+
+    @Test
+    @DisplayName("Проверить удаление из истории: начало")
+    public void testRemoveFromHistoryStart() {
+        Task task1 = new Task("Задача 1", "Задача 1", 1, Status.NEW);
+        Task task2 = new Task("Задача 2", "Задача 2", 2, Status.NEW);
+        historyManager.add(task1);
+        historyManager.add(task2);
+
+        historyManager.remove(task1.getId());
+
+        assertFalse(historyManager.getHistory().contains(task1));
+        assertTrue(historyManager.getHistory().contains(task2));
+    }
+
+    @Test
+    @DisplayName("Проверить удаление из истории: середина")
+    public void testRemoveFromHistoryMiddle() {
+        Task task1 = new Task("Задача 1", "Задача 1", 1, Status.NEW);
+        Task task2 = new Task("Задача 2", "Задача 2", 2, Status.NEW);
+        Task task3 = new Task("Задача 3", "Описание 3", 3, Status.NEW);
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.add(task3);
+
+        historyManager.remove(task2.getId());
+
+        assertFalse(historyManager.getHistory().contains(task2));
+        assertTrue(historyManager.getHistory().contains(task1));
+        assertTrue(historyManager.getHistory().contains(task3));
+    }
+
+    @Test
+    @DisplayName("Проверить удаление из истории: конец")
+    public void testRemoveFromHistoryEnd() {
+        Task task1 = new Task("Задача 1", "Задача 1", 1, Status.NEW);
+        Task task2 = new Task("Задача 2", "Задача 2", 2, Status.NEW);
+        historyManager.add(task1);
+        historyManager.add(task2);
+
+        historyManager.remove(task2.getId());
+
+        assertFalse(historyManager.getHistory().contains(task2));
+        assertTrue(historyManager.getHistory().contains(task1));
+    }
 }
