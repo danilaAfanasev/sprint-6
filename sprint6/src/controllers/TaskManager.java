@@ -47,4 +47,10 @@ public interface TaskManager {
     void checkEpicStatus(int epicId);
 
     List<Task> getHistory();
+
+    void setEpicDateTime(int epicId);
+
+    List<Task> getPrioritizedTasks();
+
+    void validate(Task newTask);
 }
