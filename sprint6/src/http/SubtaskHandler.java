@@ -3,6 +3,7 @@ package http;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import controllers.TaskManager;
+import exceptions.ManagerSaveException;
 import model.Subtask;
 import exceptions.CollisionTaskException;
 
@@ -47,7 +48,7 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                     break;
             }
         } catch (IOException e) {
-            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
+            throw new ManagerSaveException("Во время выполнения запроса произошла ошибка. Проверьте URL" + e.getMessage());
         }
     }
 
@@ -59,7 +60,7 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                 sendText(ex, gson.toJson(taskManager.getListOfSubtasks()), 200);
             }
         } catch (IOException e) {
-            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
+            throw new ManagerSaveException("Во время выполнения запроса произошла ошибка. Проверьте URL" + e.getMessage());
         }
     }
 
@@ -101,7 +102,7 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
         } catch (CollisionTaskException e) {
             sendText(ex, "Подзадача не добавлена, так как имеет наложение по времени", 406);
         } catch (IOException e) {
-            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
+            throw new ManagerSaveException("Во время выполнения запроса произошла ошибка. Проверьте URL" + e.getMessage());
         }
     }
 }
