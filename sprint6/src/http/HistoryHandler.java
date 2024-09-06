@@ -3,6 +3,7 @@ package http;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import controllers.TaskManager;
+import exceptions.ManagerSaveException;
 
 import java.io.IOException;
 
@@ -28,7 +29,7 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
                     break;
             }
         } catch (IOException e) {
-            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
+            throw new ManagerSaveException("Во время выполнения запроса произошла ошибка. Проверьте URL" + e.getMessage());
         }
     }
 
@@ -40,7 +41,7 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
                 sendText(ex, gson.toJson("Список просмотра пуст"), 400);
             }
         } catch (IOException e) {
-            System.out.println("Во время выполнения запроса произошла ошибка. Проверьте URL");
+            throw new ManagerSaveException("Во время выполнения запроса произошла ошибка. Проверьте URL" + e.getMessage());
         }
     }
 }
