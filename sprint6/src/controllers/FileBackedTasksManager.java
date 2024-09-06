@@ -2,6 +2,14 @@ package controllers;
 
 import exceptions.ManagerSaveException;
 import model.*;
+import adapters.LocalDateTimeAdapter;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -11,13 +19,16 @@ import java.util.List;
 import java.util.Map;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import http.HttpTaskServer;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
         TaskManager fileBackedTasksManager = Managers.getDefaultFile();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+
+        Gson gson = Managers.createGson();
 
         Task task1 = new Task( "Задача", "description1", 1,Status.NEW, null, 1000);
         fileBackedTasksManager.addTask(task1);
@@ -47,6 +58,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             System.out.println(entry.getKey() + " : " + entry.getValue());
         }
         System.out.println(fileManager.getHistory());
+
+        HttpTaskServer httpTaskServer = new HttpTaskServer(fileManager);
+        httpTaskServer.createHttpServer();
+        httpTaskServer.start();
+
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/task/");
+        Task task = new Task("Задача", "Описание", 1, Status.NEW,
+                LocalDateTime.parse("01.01.24 00:00", formatter), 1000);
+        String json = gson.toJson(task);
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println(body);
+        System.out.println(json);
+
+        httpTaskServer.stop();
     }
 
     private final File File;
