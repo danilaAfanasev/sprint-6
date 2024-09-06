@@ -28,9 +28,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
 
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .create();
+        Gson gson = Managers.createGson();
 
         Task task1 = new Task( "Задача", "description1", 1,Status.NEW, null, 1000);
         fileBackedTasksManager.addTask(task1);
