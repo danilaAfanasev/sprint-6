@@ -1,19 +1,15 @@
 package http;
 
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
-import adapters.DurationAdapter;
-import adapters.LocalDateTimeAdapter;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.google.gson.Gson;
+import controllers.Managers;
 import controllers.TaskManager;
 
 public class BaseHttpHandler {
@@ -24,12 +20,7 @@ public class BaseHttpHandler {
         this.taskManager = taskManager;
     }
 
-    Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .serializeNulls()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .create();
+    Gson gson = Managers.createGson();
 
     public void sendText(HttpExchange ex, String response, int code) throws IOException {
         ex.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
@@ -49,7 +40,7 @@ public class BaseHttpHandler {
 
     public void sendIncorrectMethod(HttpExchange ex) throws IOException {
         ex.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        ex.sendResponseHeaders(400, 0);
+        ex.sendResponseHeaders(405, 0);
         try (OutputStream os = ex.getResponseBody()) {
             os.write("Обработка метода не предусмотрена".getBytes(utf));
         }
